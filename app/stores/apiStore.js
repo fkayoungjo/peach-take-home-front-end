@@ -5,6 +5,7 @@ import apiActions from '../actions/apiActions';
 const apiDefaultData = {
   categories: {},
   merchants: {},
+  transactions: {},
 };
 
 const apiStore = Reflux.createStore({
@@ -15,6 +16,8 @@ const apiStore = Reflux.createStore({
         this.apiData = Object.assign({}, savedAppState || apiDefaultData);
         this.listenTo(apiActions.getCategories.completed, this.getCategories);
         this.listenTo(apiActions.getMerchants.completed, this.getMerchants);
+        this.listenTo(apiActions.getTransactions.completed, this.getTransactions);
+        this.listenTo(apiActions.updateTransaction.completed, this.updateTransaction);
       }
     });
   },
@@ -33,6 +36,13 @@ const apiStore = Reflux.createStore({
     this.trigger({ target: 'UPDATE_MERCHANTS' });
   },
 
+  getTransactions(data) {
+    this.apiData.transactions = data.data;
+
+    this.saveCurrentState();
+    this.trigger({ target: 'UPDATE_TRANSACTIONS' });
+  },
+
   getCurrentState() {
     return this.apiData;
   },
@@ -40,6 +50,20 @@ const apiStore = Reflux.createStore({
   saveCurrentState() {
     AsyncStorage.setItem('apiData', JSON.stringify(this.apiData));
   },
+
+  updateTransaction(data) {
+  
+    let updatedTransaction = data.data;
+    
+    let transactionIndex = this.apiData.transactions.findIndex(transaction => transaction.id === updatedTransaction.id);
+    if (transactionIndex !== -1) {
+      this.apiData.transactions[transactionIndex] = updatedTransaction;
+    }
+  
+    this.saveCurrentState();
+    this.trigger({ target: 'UPDATE_TRANSACTIONS' });
+  },
 });
+
 
 export default apiStore;
