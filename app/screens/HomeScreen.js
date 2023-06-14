@@ -149,7 +149,7 @@ export default function HomeScreen() {
             style={styles.gradientBackground}
           >
             <Text style={{ color: '#fff', textAlign: 'center' }}>
-              {`Unreviewed Transactions: ${unreviewedTransactions.length}`}
+              {`${unreviewedTransactions.length} New Transactions to Review`}
             </Text>
           </LinearGradient>
         </TouchableOpacity>
